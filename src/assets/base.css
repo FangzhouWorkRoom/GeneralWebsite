@@ -1,0 +1,22 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+
+*{
+  margin: 0 auto;
+}
+
+:root{
+  --page-width: 1400px;
+  --article-head-height: 200px;
+  --article-list-item-height: 15rem;
+}
+
+@media (max-width: 800px) {
+  :root{
+    --page-width: 100%;
+    --article-head-height: 10rem;
+    --article-list-item-height: 15rem;
+  }
+}
