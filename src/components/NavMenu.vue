@@ -2,16 +2,16 @@
   <div style="height: 80px;"></div>
   <div class="wap" ref="navMenuRef" @mouseleave="closeSubMenu">
     <el-row class="nav-menu-content">
-      <el-col :span="10" class="hidden-sm-and-up">
+      <el-col :span="3" class="hidden-sm-and-up">
         <el-icon style="margin: 30px 0 0 10px;" :size="20" @click="openMobileMenu">
           <Expand></Expand>
         </el-icon>
       </el-col>
-      <el-col :xs="14" :lg="6" class="site-name">Tencent</el-col>
+      <el-col :xs="21" :lg="6" class="site-name">镇江市行业老干部管理服务办公室</el-col>
       <el-col :span="18" class="hidden-sm-and-down">
         <div class="nav-menu">
           <div class="menu-item" v-for="(item, index) in pageList" :key="index">
-            <span @mouseenter="extendSubMenu(item)" @click="navgetTo(item)">{{item.name}}</span>
+            <span @mouseenter="extendSubMenu(item)" @click="navgetTo(item)" :class="isActiveMenu(item) ? 'active-menu' : ''">{{ item.name }}</span>
             <div class="sub-menu" v-if="currenUrl === item.url">
               <span v-for="(subMenu, i) in item.children" :key="i" @click="navgetTo(subMenu)">{{ subMenu.name }}</span>
             </div>
@@ -36,8 +36,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted} from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { pageList } from '@/api/data';
 import { Expand } from '@element-plus/icons-vue';
 
@@ -45,10 +45,19 @@ const showMobileMenu = ref(false);
 const navMenuRef = ref(null);
 const currenUrl = ref('');
 const router = useRouter();
+const route = useRoute();
 
 function openMobileMenu() {
   showMobileMenu.value = true;
 }
+
+const isActiveMenu = computed({
+  get() {
+    return function (item) {
+      return item.url === currenUrl.value;
+    }
+  }
+})
 
 const handleOpen = (key, keyPath) => {
   console.log(key, keyPath)
@@ -59,7 +68,7 @@ const handleClose = (key, keyPath) => {
 
 function extendSubMenu(menu) {
   currenUrl.value = menu.url;
-  if(menu.children.length) navMenuRef.value.style.height = '350px';
+  if (menu.children.length) navMenuRef.value.style.height = '350px';
 }
 
 function closeSubMenu() {
@@ -67,8 +76,18 @@ function closeSubMenu() {
 }
 
 function navgetTo(menu) {
-  if(menu.isRouter) router.push({path: menu.url});
+  getCurrentUrl();
+  if (menu.isRouter) router.push({ path: menu.url });
+  navMenuRef.value.style.height = '80px';
 }
+
+function getCurrentUrl() {
+  console.log(route.path)
+}
+
+onMounted(() => {
+  getCurrentUrl();
+})
 </script>
 
 <style lang="less" scoped>
@@ -92,24 +111,33 @@ function navgetTo(menu) {
   height: 80px;
 
   .site-name {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    color: #a10808;
+    font-weight: 600;
   }
 
   .hidden-sm-and-down {
     .nav-menu {
       float: right;
 
+      .active-menu {
+        border-bottom: 0.2rem solid #5e7ce0;
+        font-size: large;
+      }
+
       .menu-item {
         width: 150px;
         cursor: pointer;
         text-align: center;
         float: left;
-        &>span{
+
+        &>span {
           line-height: 3rem;
           padding: 0 1rem;
           display: inline-block;
         }
-        &>span:hover{
+
+        &>span:hover {
           border-bottom: 0.2rem solid #5e7ce0;
           font-size: large;
         }
@@ -122,7 +150,8 @@ function navgetTo(menu) {
             text-align: center;
             line-height: 2.5rem;
           }
-          & > span:hover{
+
+          &>span:hover {
             font-size: larger;
             font-weight: 600;
             color: #5e7ce0;
@@ -137,5 +166,4 @@ function navgetTo(menu) {
   height: 100%;
   width: calc(60vw - 30px);
   border-right: none;
-}
-</style>
+}</style>

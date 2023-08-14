@@ -1,22 +1,41 @@
-body{
+body {
   margin: 0;
   padding: 0;
 }
 
-*{
+* {
   margin: 0 auto;
 }
+*::-webkit-scrollbar{
+  width: 8px;
+  background-color: #ebebeb;
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb{
+  background-color: #b8b8b8;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+}
 
-:root{
+:root {
   --page-width: 1400px;
   --article-head-height: 200px;
   --article-list-item-height: 15rem;
+  --banner-height: 35rem;
+  --title-size: 1.6rem;
+  --primary-color: #a10808;
+  --success-color: #3AC295;
+  --warning-color: #FA9841;
+  --action-color: #5e7ce0;
 }
 
-@media (max-width: 800px) {
-  :root{
+@media (max-width: 500px) {
+  :root {
     --page-width: 100%;
     --article-head-height: 10rem;
     --article-list-item-height: 15rem;
+    --banner-height: 15rem;
+    --title-size: 1.2rem;
   }
 }
