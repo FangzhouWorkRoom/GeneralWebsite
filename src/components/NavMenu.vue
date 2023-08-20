@@ -12,7 +12,7 @@
         <div class="nav-menu">
           <div class="menu-item" v-for="(item, index) in pageList" :key="index">
             <span @mouseenter="extendSubMenu(item)" @click="navgetTo(item)" :class="isActiveMenu(item) ? 'active-menu' : ''">{{ item.name }}</span>
-            <div class="sub-menu" v-if="currenUrl === item.url">
+            <div class="sub-menu" v-if="currenUrl === item.web_path">
               <span v-for="(subMenu, i) in item.children" :key="i" @click="navgetTo(subMenu)">{{ subMenu.name }}</span>
             </div>
           </div>
@@ -23,12 +23,12 @@
   <el-drawer v-model="showMobileMenu" :with-header="false" direction="ltr" size="60%">
     <el-menu default-active="/" class="el-menu-vertical-demo" router>
       <template v-for="menu in pageList">
-        <el-menu-item v-if="menu.isRouter" :index="menu.url">{{ menu.name }}</el-menu-item>
-        <el-sub-menu v-else :index="menu.url">
+        <el-menu-item v-if="menu.is_router" :index="menu.web_path">{{ menu.name }}</el-menu-item>
+        <el-sub-menu v-else :index="menu.web_path">
           <template #title>
             {{ menu.name }}
           </template>
-          <el-menu-item v-for="(subMenu, i) in menu.children" :key="i" :index="subMenu.url">{{ subMenu.name }}</el-menu-item>
+          <el-menu-item v-for="(subMenu, i) in menu.children" :key="i" :index="subMenu.web_path">{{ subMenu.name }}</el-menu-item>
         </el-sub-menu>
       </template>
     </el-menu>
@@ -38,7 +38,6 @@
 <script setup>
 import { ref, computed, onMounted} from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { pageList } from '@/api/data';
 import { Expand } from '@element-plus/icons-vue';
 
 const showMobileMenu = ref(false);
@@ -46,6 +45,7 @@ const navMenuRef = ref(null);
 const currenUrl = ref('');
 const router = useRouter();
 const route = useRoute();
+const pageList = JSON.parse(localStorage.getItem('pageList'));
 
 function openMobileMenu() {
   showMobileMenu.value = true;
@@ -54,7 +54,7 @@ function openMobileMenu() {
 const isActiveMenu = computed({
   get() {
     return function (item) {
-      return item.url === currenUrl.value;
+      return item.web_path === currenUrl.value;
     }
   }
 })
@@ -67,7 +67,7 @@ const handleClose = (key, keyPath) => {
 }
 
 function extendSubMenu(menu) {
-  currenUrl.value = menu.url;
+  currenUrl.value = menu.web_path;
   if (menu.children.length) navMenuRef.value.style.height = '350px';
 }
 
@@ -75,14 +75,14 @@ function closeSubMenu() {
   navMenuRef.value.style.height = '80px';
 }
 
-function navgetTo(menu) {
+function navgetTo(menu) {  
   getCurrentUrl();
-  if (menu.isRouter) router.push({ path: menu.url });
+  if (menu.is_router) router.push({ path: menu.web_path });
   navMenuRef.value.style.height = '80px';
 }
 
 function getCurrentUrl() {
-  console.log(route.path)
+  console.log(route.web_path)
 }
 
 onMounted(() => {
