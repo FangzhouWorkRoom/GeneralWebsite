@@ -20,22 +20,26 @@ body {
 
 :root {
   --page-width: 1400px;
-  --article-head-height: 200px;
-  --article-list-item-height: 15rem;
-  --banner-height: 35rem;
+  --article-list-item-height: 12rem;
+  --article-img-width: 12rem;
+  --article-title-rows: 5;
+  --banner-height: 40vw;
   --title-size: 1.6rem;
   --primary-color: #a10808;
   --success-color: #3AC295;
   --warning-color: #FA9841;
   --action-color: #5e7ce0;
+  --article-page-width: 600px;
 }
 
 @media (max-width: 500px) {
   :root {
+    --article-img-width: 6rem;
+    --article-title-rows: 3;
     --page-width: 100%;
-    --article-head-height: 10rem;
-    --article-list-item-height: 15rem;
-    --banner-height: 15rem;
+    --article-list-item-height: 6rem;
+    --banner-height: 40vw;
     --title-size: 1.2rem;
+    --article-page-width: 100%;
   }
 }

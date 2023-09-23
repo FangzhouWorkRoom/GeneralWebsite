@@ -1,43 +1,54 @@
 <template>
   <div class="page-foot">
     <el-row class="page-foot-column-content">
-      <el-col :xs="24" :md="8" class="page-foot-column">
-        <div class="title">友情链接</div>
+      <el-col :xs="24" :md="8" class="page-foot-column" v-for="(key, index) in Object.keys(link_list)" :key="index">
+        <div class="title">{{key}}</div>
         <div class="list-item">
-          <div class="link-item"><el-link>中国老干部</el-link></div>
-          <div class="link-item"><el-link>江苏老干部</el-link></div>
-          <div class="link-item"><el-link>江苏省离退休干部服务管理系统</el-link></div>
-          <div class="link-item"><el-link>镇江市委老干部局</el-link></div>
-        </div>
-      </el-col>
-      <el-col :xs="24" :md="8" class="page-foot-column">
-        <div class="title">市政服务</div>
-        <div class="list-item">
-          <div class="link-item"><el-link>镇江市人民政府</el-link></div>
-          <div class="link-item"><el-link>镇江市国有资产监督管理委员会</el-link></div>
-          <div class="link-item"><el-link>市民政局</el-link></div>
-        </div>
-      </el-col>
-      <el-col :xs="24" :md="8" class="page-foot-column">
-        <div class="title">快捷入口</div>
-        <div class="list-item">
-          <div class="link-item"><el-link>天气预报</el-link></div>
-          <div class="link-item"><el-link>中国铁路12306</el-link></div>
-          <div class="link-item"><el-link>中国航班</el-link></div>
-          <div class="link-item"><el-link>健康档案</el-link></div>
+          <div class="link-item" v-for="(link, i) in link_list[key]" :key="i">
+            <el-link :href="link.link_url">{{link.link_name}}</el-link>
+          </div>
         </div>
       </el-col>
     </el-row>
 
     <div class="copyright">
-      <el-row class="copyright-content">
-        <el-col :xs="24" :md="4" class="info-item">苏ICP备20230323-1号</el-col>
-        <el-col :xs="24" :md="4" class="info-item">Copyright @ 2022 ~ 2023</el-col>
-        <el-col :xs="24" :md="4" class="info-item">华为技术有限公司苏州分公司</el-col>
+      <el-row class="copyright-content hidden-sm-and-down" >
+        <el-col :span="24" class="info-item">
+          <el-link class="info-item">苏ICP备20230136-1号</el-link>
+          Copyright 华为技术有限公司苏州分公司 @2022 ~ 2025
+        </el-col>
+      </el-row>
+      <el-row class="copyright-content hidden-sm-and-up" >
+        <el-row :span="24" class="info-item">
+          <el-link class="info-item">苏ICP备20230136-1号</el-link>
+        </el-row>
+        <el-row :span="24" class="info-item">Copyright 华为技术有限公司苏州分公司 @2022 ~ 2025</el-row>
       </el-row>
     </div>
   </div>
 </template>
+
+<script setup>
+import {inject, ref, onMounted} from 'vue';
+const globalData = inject('globalData');
+const link_list = ref({});
+
+function init() {
+  let res_data = JSON.parse(JSON.stringify(globalData));
+  res_data.links.map(item => {
+    if(link_list.value[item.link_type]) {
+      link_list.value[item.link_type].push(item);
+    } else {
+      link_list.value[item.link_type] = [item];
+    }
+  })
+}
+
+onMounted(() => {
+  init();
+})
+
+</script>
 
 <style scoped lang="less">
 .page-foot {
@@ -73,7 +84,7 @@
   .copyright {
     width: 100%;
     background-color: #2c2c2c;
-    line-height: 3rem;
+    height: auto;
 
     .copyright-content {
       width: var(--page-width);
@@ -81,10 +92,10 @@
 
       .info-item {
         color: #ffffff;
-        font-size: 1rem;
+        font-size: 0.8rem;
         padding: 0 0.2rem;
-        line-height: 2rem;
         text-align: center;
+        line-height: 2rem;
       }
     }
   }

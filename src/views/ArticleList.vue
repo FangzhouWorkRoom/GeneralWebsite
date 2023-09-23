@@ -1,52 +1,150 @@
 <template>
   <div class="article-list-page">
-    <nav-menu></nav-menu>
     <div class="article-list-head">
       <div>
-        <span>栏目名称</span>
-        <span>关于栏目的介绍，姜军还说道，网络名人、“网络大V”更要正确运用自身影响力，模范遵守法律法规，自觉承担社会责任，积极传播正能量</span>
+        <span>{{ columnData.name }}</span>
+        <span>{{ columnData.description }}</span>
       </div>
     </div>
     <div class="article-list-main">
       <el-row>
-        <el-col :xs="24" :md="8" v-for="i in 8" style="margin: 0;">
-          <div class="article-list-item"></div>
+        <el-col :xs="24" :md="16" style="margin: 0;">
+          <el-row>
+            <el-col :xs="24" :md="12" v-for="(hot, index) in hotArticle" :key="index">
+              <div class="article-list-item">
+                <div>
+                  <el-row>
+                    <el-col :xs="7" :md="12">
+                      <el-image :src="hot.cover_img" class="item-image" fit="cover"></el-image>
+                    </el-col>
+                    <el-col :xs="17" :md="12">
+                      <div class="article-list-item-title">{{ hot.title }}</div>
+                      <div class="article-list-item-time">{{ hot.create_datetime }}</div>
+                    </el-col>
+                  </el-row>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :xs="24" :md="8" class="article-list" v-loading="loading">
+          <div>
+            <el-input v-model="search.title" size="large">
+              <template #append>
+                <el-icon color="#5e7ce0" @click="searchArticle">
+                  <Search></Search>
+                </el-icon>
+              </template>
+            </el-input>
+          </div>
+          <div v-for="(article, index) in articleList" :key="index" class="article-list-simple">
+            <span class="title">{{ article.title }}</span>
+          </div>
+          <div class="pagination">
+            <el-pagination background layout="total, prev, pager, next" :current-page="search.page" :total="total" @current-change="pageChange">
+            </el-pagination>
+          </div>
         </el-col>
       </el-row>
     </div>
-    <page-foot></page-foot>
   </div>
 </template>
 
 <script setup>
-import { useRoute, onBeforeRouteLeave } from 'vue-router';
-import { ref } from 'vue';
+import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { Search } from '@element-plus/icons-vue';
+import { inject } from 'vue';
+import { about } from '@/api/data';
+import { get } from '@/api/public';
 
 const route = useRoute();
+const router = useRouter();
+const columnData = ref(route.meta.columnData);
 
-onBeforeRouteLeave(() => {
-  console.log(route.meta);
+const articleList = ref([]);
+const hotArticle = ref([]);
+const total = ref(0);
+const loading = ref(true);
+
+onMounted(async () => {
+  await queryList();
+  getHortArticle();
 })
+
+const search = ref({
+  page: 1,
+  limit: 10,
+})
+
+async function queryList() {
+  loading.value = true;
+  const params = {
+    page: search.value.page,
+    limit: search.value.limit,
+    title: search.value.title,
+    article_class: columnData.value.model_key,
+  }
+
+  let res = await get('/api/wx_cms/article/pub_article/', params);
+  articleList.value = res.data.data.data;
+  total.value = res.data.data.total;
+  loading.value = false;
+  return;
+}
+
+function getHortArticle() {
+  hotArticle.value = articleList.value.slice(0, 6);
+}
+
+function pageChange(pageNum) {
+  search.value.page = pageNum;
+  queryList();
+}
+
+function searchArticle() {
+  search.value.page = 1;
+  queryList();
+}
+
+onBeforeRouteLeave(async (to, from) => {
+  if (to.meta?.columnData?.model_key) {
+    columnData.value = to.meta.columnData;
+    await queryList();
+    getHortArticle();
+  }
+})
+
+const globalData = inject('globalData');
 </script>
 
 <style lang="less" scoped>
-.article-list-head{
-  height: var(--article-head-height);
+.hidden-text {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.article-list-head {
+  height: 10rem;
+  background-color: #f3f3f3;
   width: 100%;
-  background-image: url('@/assets/pg1.jpg');
   background-repeat: no-repeat;
   background-size: cover;
-  color: #ffffff;
-  & > div{
+  color: #252525;
+
+  &>div {
     width: var(--page-width);
     margin: 0 auto;
-    & > span:nth-child(1) {
+
+    &>span:nth-child(1) {
       font-size: 1.5rem;
       line-height: 5rem;
       display: block;
       padding: 0 10px;
     }
-    & > span:nth-child(2) {
+
+    &>span:nth-child(2) {
       font-size: 0.8rem;
       line-height: 1.5rem;
       display: block;
@@ -54,16 +152,69 @@ onBeforeRouteLeave(() => {
     }
   }
 }
-.article-list-main{
+
+.article-list-main {
   min-height: 350px;
   width: var(--page-width);
   margin: 10px auto;
-  .article-list-item{
-    width: 96%;
+  text-align: left;
+
+  .article-list-item {
+    width: calc(100% - 30px);
     height: var(--article-list-item-height);
     box-shadow: 0 2px 6px 0 rgba(37, 43, 58, 0.12);
-    margin: 0.2rem 2%;
+    margin: 0.2rem 8px;
     border-radius: 4px;
+    padding: 7px;
+    position: relative;
+
+    .article-list-item-title {
+      .hidden-text();
+      -webkit-line-clamp: var(--article-title-rows);
+      line-height: 1.5rem;
+      font-size: 1.2rem;
+      height: 4.5rem;
+    }
+
+    .article-list-item-time {
+      position: absolute;
+      bottom: 0;
+      color: #5e7ce0;
+      line-height: 2rem;
+    }
+
+    .item-image {
+      height: var(--article-img-width);
+      width: var(--article-img-width);
+    }
+  }
+}
+
+.article-list {
+  box-shadow: 0 6px 12px 0 rgba(37, 43, 58, 0.12);
+  padding: 0.5rem;
+  height: 650px;
+  position: relative;
+
+  .pagination {
+    position: absolute;
+    bottom: 5px;
+    width: calc(100% - 20px);
+    height: 45px;
+  }
+}
+
+.article-list-simple {
+  width: 100%;
+  border-bottom: 1px solid #ececec;
+
+  &>span {
+    display: block;
+    overflow: hidden;
+    line-height: 3rem;
+    font-size: 1.2rem;
+    .hidden-text();
+    -webkit-line-clamp: 1;
   }
 }
 </style>

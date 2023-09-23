@@ -1,35 +1,14 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeMount, inject } from 'vue';
+import { get } from '@/api/public';
 
-const banners = ref([
-  {
-    backgroundImg: new URL('../assets/art1.png', import.meta.url).href,
-    article: {
-      title: '以学铸魂，筑牢对党忠诚的思想根基——老干部办离退休干部第九、十党支部开展主题党日活动',
-      summary: `2021年7月1日早上七点多，市国资委行业老干部办全体党员干部、工作人员早早地来到电子阅览室翘首以待庆祝中国共产党成立100周年大会直播，离退休老同志们分别自行收看电视直播。
-在北京天安门广场上空，空中护旗梯队悬挂党旗和巨幅标语飞过，拉开飞行庆祝表演序幕。直升机、战斗机分别组成“100”“71”字样掠过长空。15架歼-20飞机组成3个梯队呼啸而过，教练机拉出10道彩烟，彩烟`,
-      url: '',
-    }
-  },
-  {
-    backgroundImg: new URL('../assets/art2.png', import.meta.url).href,
-    article: {
-      title: '铭嘱托 铸忠诚 强动力——老干部办离退休干部第十四党支部与煤矿联合党支部联合开展迎“七一”主题党日活动',
-      summary: `2021年7月1日早上七点多，市国资委行业老干部办全体党员干部、工作人员早早地来到电子阅览室翘首以待庆祝中国共产党成立100周年大会直播，离退休老同志们分别自行收看电视直播。
-在北京天安门广场上空，空中护旗梯队悬挂党旗和巨幅标语飞过，拉开飞行庆祝表演序幕。直升机、战斗机分别组成“100”“71”字样掠过长空。15架歼-20飞机组成3个梯队呼啸而过，教练机拉出10道彩烟，彩烟`,
-      url: '',
-    }
-  },
-  {
-    backgroundImg: new URL('../assets/art3.png', import.meta.url).href,
-    article: {
-      title: '【专题报告】中央党史和文献研究院副院长黄一兵主讲：深入学习习近平新时代中国特色社会主义思想',
-      summary: `2021年7月1日早上七点多，市国资委行业老干部办全体党员干部、工作人员早早地来到电子阅览室翘首以待庆祝中国共产党成立100周年大会直播，离退休老同志们分别自行收看电视直播。
-在北京天安门广场上空，空中护旗梯队悬挂党旗和巨幅标语飞过，拉开飞行庆祝表演序幕。直升机、战斗机分别组成“100”“71”字样掠过长空。15架歼-20飞机组成3个梯队呼啸而过，教练机拉出10道彩烟，彩烟`,
-      url: '',
-    }
-  }
-])
+const data = ref({});
+const globalData = inject('globalData');
+
+async function getHomeData() {
+  let res_data = JSON.parse(JSON.stringify(globalData));
+  data.value = res_data;
+}
 
 const isMobile = computed({
   get() {
@@ -43,22 +22,28 @@ const titleRows = computed({
   }
 })
 
-const activeNotice = ref(1);
+const activeNotice = ref(0);
+
+function openUrl(url) {
+  window.open(url, '_target');
+}
+
+onBeforeMount(() => {
+  getHomeData();
+})
 
 </script>
 
 <template>
   <div class="home-page">
-    <nav-menu></nav-menu>
-
     <!--最近五条新闻-->
-    <el-carousel indicator-position="outside" :height="isMobile ? '15rem' : '35rem'">
-      <el-carousel-item v-for="(item, index) in banners" :key="index">
-        <div class="article-content" :style="{ backgroundImage: `url(${item.backgroundImg})` }">
-          <div class="article-info">
-            <span>{{ item.article.title }}</span>
-            <span class="hidden-sm-and-down">{{ item.article.summary }}</span>
-          </div>
+    <el-carousel indicator-position="outside" height="40vw">
+      <el-carousel-item v-for="(item, index) in data.banner_list" :key="index">
+        <div class="article-content" :style="{ backgroundImage: `url(${item.banner_img})` }" @click="openUrl(item.url)">
+          <!-- <div class="article-info">
+            <span>{{ item.title }}</span>
+            <span class="hidden-sm-and-down">{{ item.description }}</span>
+          </div> -->
         </div>
       </el-carousel-item>
     </el-carousel>
@@ -68,15 +53,11 @@ const activeNotice = ref(1);
         <!--时政要闻-->
         <el-col :xs="24" :md="12" class="current-affairs">
           <div class="model-content">
-            <div class="model-title">时政要闻<span>查看更多>></span></div>
+            <div class="model-title">时政要闻</div>
             <div class="list-content">
-              <el-row v-for="i in 15">
-                <el-col :xs="24" :md="18" class="title">
-                  铭嘱托 铸忠诚 强动力——老干部办离退休干部第十四党支部与煤矿联合党支部联合开展迎“七一”主题党日活动
-                </el-col>
-                <el-col :xs="24" :md="6" class="date-time">
-                  2023-08-13 15:32:12
-                </el-col>
+              <el-row v-for="(news, index) in data.new_list" :key="index">
+                <el-col :span="21" class="title"> · {{ news.title }}</el-col>
+                <el-col :span="3" class="date-time">09-17</el-col>
               </el-row>
             </div>
           </div>
@@ -85,12 +66,12 @@ const activeNotice = ref(1);
         <!--工作动态-->
         <el-col :xs="24" :md="12" class="work-dynamics">
           <div class="model-content">
-            <div class="model-title">工作动态<span>查看更多>></span></div>
+            <div class="model-title">工作动态</div>
             <el-row class="work-list">
-              <el-col :xs="24" :md="12" v-for="i in 6">
+              <el-col :xs="24" :md="12" v-for="(work, index) in data.work_list" :key="index">
                 <div class="work-item">
-                  <img src="@/assets/pg1.jpg" />
-                  <span>铭嘱托 铸忠诚 强动力——老干部办离退休干部第十四党支部与煤矿联合党支部联合开展迎“七一”主题党日活动</span>
+                  <el-image :src="work.cover_img" class="item-image" fit="cover"></el-image>
+                  <span>{{ work.title }}</span>
                 </div>
               </el-col>
             </el-row>
@@ -100,21 +81,14 @@ const activeNotice = ref(1);
         <!--通知公示-->
         <el-col :xs="24" :md="18" class="notice-publicity">
           <div class="model-content">
-            <div class="model-title">通知公示<span>查看更多>></span></div>
+            <div class="model-title">通知公示</div>
             <el-collapse v-model="activeNotice" accordion>
-              <el-collapse-item :name="i" v-for="i in 5" class="notice-item">
+              <el-collapse-item :name="index" v-for="(notice, index) in data.notice_list" :key="index" class="notice-item">
                 <template #title>
-                  <div class="title" :style="{ color: activeNotice === i ? 'var(--primary-color)' : '#000000' }">
-                    中央党史和文献研究院副院长黄一兵主讲：深入学习习近平新时代中国特色社会主义思想
-                  </div>
+                  <div class="title" :style="{ color: activeNotice === index ? 'var(--primary-color)' : '#000000' }">{{ notice.title }}</div>
                 </template>
-                <div class="notice-content">
-                  2021年7月1日早上七点多，市国资委行业老干部办全体党员干部、工作人员早早地来到电子阅览室翘首以待庆祝中国共产党成立100周年大会直播，离退休老同志们分别自行收看电视直播。
-                  在北京天安门广场上空，空中护旗梯队悬挂党旗和巨幅标语飞过，拉开飞行庆祝表演序幕。直升机、战斗机分别组成“100”“71”字样掠过长空。15架歼-20飞机组成3个梯队呼啸而过，教练机拉出10道彩烟，彩烟
-                </div>
-                <div class="notice-time">
-                  2023-08-13 16:25:16
-                </div>
+                <div class="notice-content">{{ notice.description }}</div>
+                <div class="notice-time">{{ notice.update_datetime }}</div>
               </el-collapse-item>
             </el-collapse>
           </div>
@@ -125,17 +99,15 @@ const activeNotice = ref(1);
           <div class="model-content">
             <div class="model-title">领导信箱</div>
             <table style="width: 100%;">
-              <tr v-for="i in 5">
-                <td class="mailbox-td">钱书记</td>
-                <td class="mailbox-td">qianzhongqing@zjshylgbb.com</td>
+              <tr v-for="(item, i) in data.connect" :key="i">
+                <td class="mailbox-td">{{ item.name }}</td>
+                <td class="mailbox-td">{{ item.email }}</td>
               </tr>
             </table>
           </div>
         </el-col>
       </el-row>
     </div>
-
-    <page-foot></page-foot>
   </div>
 </template>
 
@@ -150,29 +122,32 @@ const activeNotice = ref(1);
   height: var(--banner-height);
   background-color: aliceblue;
   background-repeat: no-repeat;
-  background-size: cover;
-  padding-top: 2rem;
+  background-size: 100% 100%;
+  position: relative;
 
   .article-info {
-    width: var(--page-width);
+    width: 100vw;
+    overflow: hidden;
+    background-color: #ffffffbd;
+    position: absolute;
+    bottom: 0;
 
     &>span:nth-child(1) {
+      width: var(--page-width);
       .hidden-text();
       display: block;
       font-size: var(--title-size);
-      background-color: #ffffff70;
-      width: 96%;
-      font-weight: 600;
+      font-weight: 300;
       color: #000000;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
     }
 
     &>span:nth-child(2) {
+      margin-top: 15px;
       display: block;
       color: #1f1f1f;
       font-size: 1rem;
-      background-color: #ffffff70;
-      width: 96%;
+      width: var(--page-width);
       .hidden-text();
       -webkit-line-clamp: 3;
       line-height: 1.5rem;
@@ -231,6 +206,7 @@ const activeNotice = ref(1);
     &>div {
       width: 100%;
       border-bottom: 1px solid #ececec;
+
       .title {
         display: block;
         float: left;
@@ -240,27 +216,30 @@ const activeNotice = ref(1);
         font-size: 1.2rem;
         font-weight: 400;
         .hidden-text();
-        -webkit-line-clamp: v-bind('titleRows');
+        -webkit-line-clamp: 1;
+        color: #71757F;
       }
 
       .date-time {
-        color: var(--action-color);
+        color: #252B3A;
+        text-align: right;
+        margin: 8px 0;
+        line-height: 1.5rem;
       }
     }
   }
 
   .work-list {
     padding-bottom: 10px;
+
     .work-item {
       width: calc(100% - 10px);
       margin-top: 10px;
       box-shadow: 0 2px 6px 0 rgba(37, 58, 43, 0.12);
       border-radius: 4px;
 
-      &>img {
+      .item-image {
         width: 100%;
-        border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
         height: 10rem;
       }
 
@@ -274,7 +253,7 @@ const activeNotice = ref(1);
     }
   }
 
-  .mailbox-td{
+  .mailbox-td {
     text-align: center;
     line-height: 2rem;
   }
@@ -302,4 +281,5 @@ const activeNotice = ref(1);
       font-weight: 800;
     }
   }
-}</style>
+}
+</style>

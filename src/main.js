@@ -8,7 +8,7 @@ import { createPinia } from 'pinia';
 import Components from '@/components';
 import axios from '@/api/public';
 import { get } from '@/api/public';
-import {pageList} from '@/api/data';
+import { pageList } from '@/api/data';
 
 import App from './App.vue';
 import router from './router';
@@ -16,33 +16,37 @@ import router from './router';
 const app = createApp(App);
 
 app.use(createPinia());
-app.use(router);
 app.use(axios);
 app.use(ElementPlus, { locale: zhCn });
 app.use(Components);
 
 function addRouter(route) {
-  console.log(route)
   router.addRoute({
     path: route.web_path,
     name: route.web_path,
-    meta: { key: route.model_key },
+    meta: { columnData: route },
     component: () => import(/* @vite-ignore */ './views/' + route.model + '.vue'),
   });
 }
 
+async function setColumnList(pageList) {
+  pageList.map(page => {
+    if (page.is_router) {addRouter(page)};
+    page.children.map(subPage => {
+      if (subPage.is_router) addRouter(subPage);
+    })
+  })
+  return;
+}
 
 
 async function initPage() {
   let pageList = (await get('/api/system/column/list_tree/')).data.data.data;
   localStorage.setItem('pageList', JSON.stringify(pageList));
-  console.log(pageList)
-  pageList.map(page => {
-    if (page.is_router) addRouter(page);
-    page.children.map(subPage => {
-      if (subPage.is_router) addRouter(subPage);
-    })
-  })
+  let globalData = (await get('/api/system/company_home/pub/')).data.data.data[0];
+  await setColumnList(pageList);
+  app.provide('globalData', globalData);
+  app.use(router);
   app.mount('#app');
 }
 
