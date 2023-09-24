@@ -75,7 +75,7 @@ export default {
         }
         get(`/api/wx_cms/article_class/pub_article_class/`, params)
           .then((res) => {
-            console.log(res);
+            document.title = res.data.data.data[0].column_name;
             resolve("success");
           })
           .catch(() => {
@@ -103,7 +103,6 @@ export default {
       }
       try {
         let res = await get("/api/wx_cms/article/pub_article/", params);
-        console.log(res)
         this.list = this.list.concat(res.data.data.data);
         this.loading = false;
       } catch {

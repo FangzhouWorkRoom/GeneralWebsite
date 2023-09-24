@@ -13,6 +13,8 @@ import { pageList } from '@/api/data';
 import App from './App.vue';
 import router from './router';
 
+const modules = import.meta.glob('@/views/*.vue');
+
 const app = createApp(App);
 
 app.use(createPinia());
@@ -25,7 +27,7 @@ function addRouter(route) {
     path: route.web_path,
     name: route.web_path,
     meta: { columnData: route },
-    component: () => import(/* @vite-ignore */ './views/' + route.model + '.vue'),
+    component: modules[`/src/views/${route.model}.vue`],
   });
 }
 
