@@ -29,7 +29,7 @@ function openUrl(row) {
   if (row.source === 1) {
     window.open(row.url, '_blank');
   } else {
-    window.open(`/article/${row.article_id}`, '_blank');
+    window.open(`/article/${row.id}`, '_blank');
   }
 }
 
