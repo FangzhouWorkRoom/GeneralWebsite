@@ -131,7 +131,7 @@ onMounted(() => {
       }
 
       .menu-item {
-        width: 150px;
+        min-width: 150px;
         cursor: pointer;
         text-align: center;
         float: left;
@@ -158,7 +158,6 @@ onMounted(() => {
 
           &>span:hover {
             font-size: larger;
-            font-weight: 600;
             color: #5e7ce0;
           }
         }

@@ -1,7 +1,7 @@
 <template>
   <nav-menu></nav-menu>
   <div class="about-page">
-    <div class="article-list-head" :style="{ backgroundImage: columnData.cover_img }">
+    <div class="article-list-head" :style="{ backgroundImage: `url(${columnData.cover_img}`}">
       <div>
         <span>{{ columnData.title }}</span>
         <span>{{ columnData.description }}</span>
@@ -26,12 +26,16 @@ const columnData = route.meta.columnData;
 </script>
 
 <style lang="less" scoped>
+.hidden-text {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
 .article-list-head {
   height: var(--article-head-height);
   width: 100%;
-  background-color: #000000;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100% 100%;
   color: #ffffff;
 
   &>div {
@@ -40,16 +44,19 @@ const columnData = route.meta.columnData;
 
     &>span:nth-child(1) {
       font-size: 1.5rem;
-      line-height: 5rem;
+      line-height: 2rem;
       display: block;
-      padding: 0 10px;
+      padding: 0 5px;
+      padding-top: 1rem;
     }
 
     &>span:nth-child(2) {
-      font-size: 0.8rem;
+      font-size: 1rem;
       line-height: 1.5rem;
       display: block;
-      padding: 0 10px;
+      padding: 0;
+      .hidden-text();
+      -webkit-line-clamp: var(--article-title-rows);
     }
   }
 }

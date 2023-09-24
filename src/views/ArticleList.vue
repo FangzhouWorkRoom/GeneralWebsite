@@ -1,7 +1,7 @@
 <template>
   <nav-menu></nav-menu>
   <div class="article-list-page">
-    <div class="article-list-head">
+    <div class="article-list-head" :style="{ backgroundImage: `url(${columnData.cover_img}`}">
       <div>
         <span>{{ columnData.name }}</span>
         <span>{{ columnData.description }}</span>
@@ -114,7 +114,6 @@ onBeforeRouteLeave(async (to, from) => {
     columnData.value = to.meta.columnData;
     await queryList();
     getHortArticle();
-    console.log(columnData.value)
   }
 })
 
@@ -137,12 +136,11 @@ const globalData = inject('globalData');
 }
 
 .article-list-head {
-  height: 10rem;
-  background-color: #f3f3f3;
+  height: var(--article-head-height);
   width: 100%;
   background-repeat: no-repeat;
-  background-size: cover;
-  color: #252525;
+  background-size: 100% 100%;
+  color: #ffffff;
 
   &>div {
     width: var(--page-width);
@@ -150,16 +148,19 @@ const globalData = inject('globalData');
 
     &>span:nth-child(1) {
       font-size: 1.5rem;
-      line-height: 5rem;
+      line-height: 2rem;
       display: block;
-      padding: 0 10px;
+      padding: 0 5px;
+      padding-top: 1rem;
     }
 
     &>span:nth-child(2) {
-      font-size: 0.8rem;
+      font-size: 1rem;
       line-height: 1.5rem;
       display: block;
-      padding: 0 10px;
+      padding: 0;
+      .hidden-text();
+      -webkit-line-clamp: 2;
     }
   }
 }
