@@ -1,4 +1,5 @@
 <template>
+  <nav-menu></nav-menu>
   <div class="article-list-page">
     <div class="article-list-head">
       <div>
@@ -10,7 +11,7 @@
       <el-row>
         <el-col :xs="24" :md="16" style="margin: 0;">
           <el-row>
-            <el-col :xs="24" :md="12" v-for="(hot, index) in hotArticle" :key="index">
+            <el-col :xs="24" :md="12" v-for="(hot, index) in hotArticle" :key="index" @click="openUrl(hot)">
               <div class="article-list-item">
                 <div>
                   <el-row>
@@ -37,7 +38,7 @@
               </template>
             </el-input>
           </div>
-          <div v-for="(article, index) in articleList" :key="index" class="article-list-simple">
+          <div v-for="(article, index) in articleList" :key="index" class="article-list-simple" @click="openUrl(article)">
             <span class="title">{{ article.title }}</span>
           </div>
           <div class="pagination">
@@ -48,6 +49,7 @@
       </el-row>
     </div>
   </div>
+  <page-foot></page-foot>
 </template>
 
 <script setup>
@@ -112,8 +114,17 @@ onBeforeRouteLeave(async (to, from) => {
     columnData.value = to.meta.columnData;
     await queryList();
     getHortArticle();
+    console.log(columnData.value)
   }
 })
+
+function openUrl(row) {
+  if (row.source === 1) {
+    window.open(row.url, '_blank');
+  } else {
+    window.open(`/article/${row.id}`, '_blank');
+  }
+}
 
 const globalData = inject('globalData');
 </script>
@@ -167,6 +178,7 @@ const globalData = inject('globalData');
     border-radius: 4px;
     padding: 7px;
     position: relative;
+    cursor: pointer;
 
     .article-list-item-title {
       .hidden-text();
@@ -193,7 +205,7 @@ const globalData = inject('globalData');
 .article-list {
   box-shadow: 0 6px 12px 0 rgba(37, 43, 58, 0.12);
   padding: 0.5rem;
-  height: 650px;
+  height: 635px;
   position: relative;
 
   .pagination {
@@ -207,6 +219,7 @@ const globalData = inject('globalData');
 .article-list-simple {
   width: 100%;
   border-bottom: 1px solid #ececec;
+  cursor: pointer;
 
   &>span {
     display: block;

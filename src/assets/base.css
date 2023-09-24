@@ -29,7 +29,7 @@ body {
   --success-color: #3AC295;
   --warning-color: #FA9841;
   --action-color: #5e7ce0;
-  --article-page-width: 600px;
+  --article-page-width: 1200px;
 }
 
 @media (max-width: 500px) {

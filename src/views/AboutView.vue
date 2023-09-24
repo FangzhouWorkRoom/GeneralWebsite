@@ -1,4 +1,5 @@
 <template>
+  <nav-menu></nav-menu>
   <div class="about-page">
     <div class="article-list-head" :style="{ backgroundImage: columnData.cover_img }">
       <div>
@@ -10,6 +11,7 @@
       <div v-html="globalData.about"></div>
     </div>
   </div>
+  <page-foot></page-foot>
 </template>
 
 <script setup>

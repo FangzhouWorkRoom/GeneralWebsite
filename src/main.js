@@ -44,6 +44,7 @@ async function initPage() {
   let pageList = (await get('/api/system/column/list_tree/')).data.data.data;
   localStorage.setItem('pageList', JSON.stringify(pageList));
   let globalData = (await get('/api/system/company_home/pub/')).data.data.data[0];
+  document.title = globalData.site_name;
   await setColumnList(pageList);
   app.provide('globalData', globalData);
   app.use(router);

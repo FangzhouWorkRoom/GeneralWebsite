@@ -24,8 +24,12 @@ const titleRows = computed({
 
 const activeNotice = ref(0);
 
-function openUrl(url) {
-  window.open(url, '_target');
+function openUrl(row) {
+  if (row.source === 1) {
+    window.open(row.url, '_blank');
+  } else {
+    window.open(`/article/${row.id}`, '_blank');
+  }
 }
 
 onBeforeMount(() => {
@@ -35,15 +39,12 @@ onBeforeMount(() => {
 </script>
 
 <template>
+  <nav-menu></nav-menu>
   <div class="home-page">
     <!--最近五条新闻-->
     <el-carousel indicator-position="outside" height="40vw">
       <el-carousel-item v-for="(item, index) in data.banner_list" :key="index">
-        <div class="article-content" :style="{ backgroundImage: `url(${item.banner_img})` }" @click="openUrl(item.url)">
-          <!-- <div class="article-info">
-            <span>{{ item.title }}</span>
-            <span class="hidden-sm-and-down">{{ item.description }}</span>
-          </div> -->
+        <div class="article-content" :style="{ backgroundImage: `url(${item.banner_img})` }" @click="openUrl(item)">
         </div>
       </el-carousel-item>
     </el-carousel>
@@ -55,7 +56,7 @@ onBeforeMount(() => {
           <div class="model-content">
             <div class="model-title">时政要闻</div>
             <div class="list-content">
-              <el-row v-for="(news, index) in data.new_list" :key="index">
+              <el-row v-for="(news, index) in data.new_list" :key="index" @click="openUrl(news)" style="cursor: pointer;">
                 <el-col :span="21" class="title"> · {{ news.title }}</el-col>
                 <el-col :span="3" class="date-time">09-17</el-col>
               </el-row>
@@ -68,7 +69,7 @@ onBeforeMount(() => {
           <div class="model-content">
             <div class="model-title">工作动态</div>
             <el-row class="work-list">
-              <el-col :xs="24" :md="12" v-for="(work, index) in data.work_list" :key="index">
+              <el-col :xs="24" :md="12" v-for="(work, index) in data.work_list" :key="index" @click="openUrl(work)" style="cursor: pointer;">
                 <div class="work-item">
                   <el-image :src="work.cover_img" class="item-image" fit="cover"></el-image>
                   <span>{{ work.title }}</span>
@@ -85,7 +86,10 @@ onBeforeMount(() => {
             <el-collapse v-model="activeNotice" accordion>
               <el-collapse-item :name="index" v-for="(notice, index) in data.notice_list" :key="index" class="notice-item">
                 <template #title>
-                  <div class="title" :style="{ color: activeNotice === index ? 'var(--primary-color)' : '#000000' }">{{ notice.title }}</div>
+                  <div class="title" :style="{ color: activeNotice === index ? 'var(--primary-color)' : '#000000' }"  
+                    @click="openUrl(notice)" style="cursor: pointer;">
+                    {{ notice.title }}
+                  </div>
                 </template>
                 <div class="notice-content">{{ notice.description }}</div>
                 <div class="notice-time">{{ notice.update_datetime }}</div>
@@ -109,6 +113,7 @@ onBeforeMount(() => {
       </el-row>
     </div>
   </div>
+  <page-foot></page-foot>
 </template>
 
 <style scoped lang="less">

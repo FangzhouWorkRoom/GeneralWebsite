@@ -7,7 +7,7 @@
           <Expand></Expand>
         </el-icon>
       </el-col>
-      <el-col :xs="21" :lg="6" class="site-name">镇江市行业老干部管理服务办公室</el-col>
+      <el-col :xs="21" :lg="6" class="site-name">{{globalData.site_name}}</el-col>
       <el-col :span="18" class="hidden-sm-and-down">
         <div class="nav-menu">
           <div class="menu-item" v-for="(item, index) in pageList" :key="index">
@@ -36,10 +36,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick} from 'vue';
+import { ref, computed, onMounted, nextTick, inject} from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { Expand } from '@element-plus/icons-vue';
 
+const globalData = inject('globalData');
 const showMobileMenu = ref(false);
 const navMenuRef = ref(null);
 const currentAcctive = ref('');
