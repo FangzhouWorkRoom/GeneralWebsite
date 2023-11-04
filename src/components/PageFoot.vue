@@ -5,7 +5,7 @@
         <div class="title">{{key}}</div>
         <div class="list-item">
           <div class="link-item" v-for="(link, i) in link_list[key]" :key="i">
-            <el-link :href="link.link_url">{{link.link_name}}</el-link>
+            <el-link :href="link.link_url" target="_">{{link.link_name}}</el-link>
           </div>
         </div>
       </el-col>
