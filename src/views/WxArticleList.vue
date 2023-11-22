@@ -71,7 +71,7 @@ export default {
         const params = {
           page: 1,
           limit: 20,
-          id: 1,
+          id: clumn_id,
         }
         get(`/api/wx_cms/article_class/pub_article_class/`, params)
           .then((res) => {
