@@ -17,7 +17,6 @@
 <script setup>
 import { inject } from 'vue';
 import { useRoute } from 'vue-router';
-import { about } from '@/api/data';
 
 const route = useRoute();
 const globalData = inject('globalData');

@@ -37,7 +37,7 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick, inject} from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { Expand } from '@element-plus/icons-vue';
 
 const globalData = inject('globalData');
@@ -46,7 +46,6 @@ const navMenuRef = ref(null);
 const currentAcctive = ref('');
 const currenUrl = ref('');
 const router = useRouter();
-const route = useRoute();
 const pageList = JSON.parse(localStorage.getItem('pageList'));
 
 function openMobileMenu() {
@@ -60,13 +59,6 @@ const isActiveMenu = computed({
     }
   }
 })
-
-const handleOpen = (key, keyPath) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key, keyPath) => {
-  console.log(key, keyPath)
-}
 
 function extendSubMenu(menu) {
   currentAcctive.value = menu.web_path;

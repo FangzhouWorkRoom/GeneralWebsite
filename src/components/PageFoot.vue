@@ -14,13 +14,13 @@
     <div class="copyright">
       <el-row class="copyright-content hidden-sm-and-down" >
         <el-col :span="24" class="info-item">
-          <el-link class="info-item">苏ICP备20230136-1号</el-link>
+          <el-link class="info-item">{{ globalData.filings }}</el-link>
           Copyright {{globalData.site_name}} @2022 ~ 2025
         </el-col>
       </el-row>
       <el-row class="copyright-content hidden-sm-and-up" >
         <el-row :span="24" class="info-item">
-          <el-link class="info-item">苏ICP备20230136-1号</el-link>
+          <el-link class="info-item">{{globalData.filings}}</el-link>
         </el-row>
         <el-row :span="24" class="info-item">Copyright {{globalData.site_name}} @2022 ~ 2025</el-row>
       </el-row>

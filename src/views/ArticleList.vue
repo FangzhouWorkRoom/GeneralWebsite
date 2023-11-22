@@ -53,15 +53,13 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router';
+import { useRoute, onBeforeRouteLeave } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { Search } from '@element-plus/icons-vue';
 import { inject } from 'vue';
-import { about } from '@/api/data';
 import { get } from '@/api/public';
 
 const route = useRoute();
-const router = useRouter();
 const columnData = ref(route.meta.columnData);
 
 const articleList = ref([]);
