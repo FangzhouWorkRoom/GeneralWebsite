@@ -42,7 +42,7 @@
             <span class="title">{{ article.title }}</span>
           </div>
           <div class="pagination">
-            <el-pagination background layout="total, prev, pager, next" :current-page="search.page" :total="total" @current-change="pageChange">
+            <el-pagination background layout="total, prev, pager, next" :current-page="search.page" :total="total" @current-change="pageChange" :pager-count="5">
             </el-pagination>
           </div>
         </el-col>
@@ -156,7 +156,7 @@ const globalData = inject('globalData');
       font-size: 1rem;
       line-height: 1.5rem;
       display: block;
-      padding: 0;
+      padding: 5px;
       .hidden-text();
       -webkit-line-clamp: 2;
     }

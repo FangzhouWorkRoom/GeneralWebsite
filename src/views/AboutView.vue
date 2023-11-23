@@ -53,7 +53,7 @@ const columnData = route.meta.columnData;
       font-size: 1rem;
       line-height: 1.5rem;
       display: block;
-      padding: 0;
+      padding: 0 5px;
       .hidden-text();
       -webkit-line-clamp: var(--article-title-rows);
     }
