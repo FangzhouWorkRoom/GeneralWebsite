@@ -25,7 +25,6 @@ const titleRows = computed({
 const activeNotice = ref(0);
 
 function openUrl(row) {
-  console.log(row)
   if (row.source === 1) {
     window.open(row.url, '_blank');
   } else {
@@ -70,7 +69,7 @@ onBeforeMount(() => {
           <div class="model-content">
             <div class="model-title">工作动态</div>
             <el-row class="work-list">
-              <el-col :xs="24" :md="12" v-for="(work, index) in data.work_list" :key="index" @click="openUrl(work)" style="cursor: pointer;">
+              <el-col :xs="24" :md="12" v-for="(work, index) in data.work_list" :key="index" @click="openUrl(work)" style="cursor: pointer; margin: 0;">
                 <div class="work-item">
                   <el-image :src="work.cover_img" class="item-image" fit="cover"></el-image>
                   <span>{{ work.title }}</span>
@@ -253,6 +252,7 @@ onBeforeMount(() => {
         display: block;
         font-size: 1rem;
         font-weight: 400;
+        height: 4rem;
         .hidden-text();
         -webkit-line-clamp: 3;
       }

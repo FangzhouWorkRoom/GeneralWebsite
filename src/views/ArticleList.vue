@@ -11,7 +11,7 @@
       <el-row>
         <el-col :xs="24" :md="16" style="margin: 0;">
           <el-row>
-            <el-col :xs="24" :md="12" v-for="(hot, index) in hotArticle" :key="index" @click="openUrl(hot)">
+            <el-col :xs="24" :md="12" v-for="(hot, index) in hotArticle" :key="index" @click="openUrl(hot)" style="margin: 0;">
               <div class="article-list-item">
                 <div>
                   <el-row>
