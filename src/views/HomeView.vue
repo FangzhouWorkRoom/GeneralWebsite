@@ -1,26 +1,25 @@
 <script setup>
-import { ref, computed, onBeforeMount, inject } from 'vue';
-import { get } from '@/api/public';
+import { ref, onBeforeMount, inject } from 'vue';
+import { Message } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 
 const data = ref({});
 const globalData = inject('globalData');
+const newMessage = ref({});
+
+function submitMessage() {
+  console.log(newMessage.value);
+  ElMessage.success('留言已提交')
+}
+
+function resetMessage() {
+  newMessage.value = {};
+}
 
 async function getHomeData() {
   let res_data = JSON.parse(JSON.stringify(globalData));
   data.value = res_data;
 }
-
-const isMobile = computed({
-  get() {
-    return document.body.clientWidth < 500;
-  }
-})
-
-const titleRows = computed({
-  get() {
-    return isMobile.value ? 2 : 1;
-  }
-})
 
 const activeNotice = ref(0);
 
@@ -80,14 +79,14 @@ onBeforeMount(() => {
         </el-col>
 
         <!--通知公示-->
-        <el-col :xs="24" :md="18" class="notice-publicity">
+        <el-col :xs="24" :md="16" class="notice-publicity">
           <div class="model-content">
             <div class="model-title">通知公示</div>
             <el-collapse v-model="activeNotice" accordion>
               <el-collapse-item :name="index" v-for="(notice, index) in data.notice_list" :key="index" class="notice-item">
                 <template #title>
-                  <div class="title" :style="{ color: activeNotice === index ? 'var(--primary-color)' : '#000000' }"  
-                    @click="openUrl(notice)" style="cursor: pointer;">
+                  <div class="title" :style="{ color: activeNotice === index ? 'var(--primary-color)' : '#000000' }" @click="openUrl(notice)"
+                    style="cursor: pointer;">
                     {{ notice.title }}
                   </div>
                 </template>
@@ -99,15 +98,28 @@ onBeforeMount(() => {
         </el-col>
 
         <!--领导信箱-->
-        <el-col :xs="24" :md="6" class="leader-mailbox">
+        <el-col :xs="24" :md="8" class="leader-mailbox">
           <div class="model-content">
             <div class="model-title">领导信箱</div>
-            <table style="width: 100%;">
-              <tr v-for="(item, i) in data.connect" :key="i">
-                <td class="mailbox-td">{{ item.name }}</td>
-                <td class="mailbox-td">{{ item.email }}</td>
-              </tr>
-            </table>
+            <div class="message-box">
+              <el-form label-position="left" label-width="60px" :model="newMessage">
+                <el-form-item label="留言:">
+                  <el-input type="textarea" show-word-limit :maxlength="500" :rows="4" v-model="newMessage.message"></el-input>
+                </el-form-item>
+                <el-form-item label="姓名:">
+                  <el-input v-model="newMessage.name"></el-input>
+                </el-form-item>
+                <el-form-item label="电话:">
+                  <el-input v-model="newMessage.telphone"></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <div style="width: 100%;">
+                    <el-button :icon="Message" type="primary" @click="resetMessage">重置</el-button>
+                    <el-button :icon="Message" type="danger" @click="submitMessage">提交留言</el-button>
+                  </div>
+                </el-form-item>
+              </el-form>
+            </div>
           </div>
         </el-col>
       </el-row>
@@ -181,13 +193,18 @@ onBeforeMount(() => {
   .leader-mailbox {
     min-height: 100px;
     margin-bottom: 10px;
+
+    .message-box {
+      text-align: center;
+      padding: 5px;
+    }
   }
 
   .model-content {
     width: calc(100% - 10px);
     height: 100%;
     margin: 0 auto;
-    box-shadow: 0 2px 6px 0 rgba(37, 58, 43, 0.12);
+    box-shadow: 0 2px 6px 0 #253a2b1f;
   }
 
   .model-title {
